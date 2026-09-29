@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NaneBijus | Loja de Bijuterias & Artesanatos</title>
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-color: #d4a373;
+      --secondary-color: #fefae0;
+      --accent-color: #e76f51;
+      --dark-color: #2b2d42;
+      --bg-light: #faedcd;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #fdfbf7;
+      color: var(--dark-color);
+    }
+
+    .brand-font {
+      font-family: 'Playfair Display', serif;
+    }
+
+    .navbar {
+      background-color: #ffffff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .btn-nane {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 600;
+      border: none;
+      transition: all 0.3s;
+    }
+
+    .btn-nane:hover {
+      background-color: #bc8a5f;
+      color: white;
+    }
+
+    .btn-whatsapp {
+      background-color: #25d366;
+      color: white;
+      font-weight: 600;
+      border: none;
+    }
+
+    .btn-whatsapp:hover {
+      background-color: #1da851;
+      color: white;
+    }
+
+    .product-card {
+      border: none;
+      border-radius: 12px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .product-img {
+      height: 200px;
+      object-fit: cover;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+    }
+
+    .badge-cat {
+      background-color: var(--bg-light);
+      color: #8a5a36;
+      font-weight: 500;
+    }
+
+    .cart-badge {
+      background-color: var(--accent-color);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+      <a class="navbar-brand brand-font fs-3 text-dark fw-bold" href="#">
+        <i class="fa-solid fa-gem text-warning me-2"></i>NaneBijus
+      </a>
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navContent">
+        <div class="mx-auto w-50 my-2 my-lg-0">
+          <div class="input-group">
+            <input type="text" id="searchInput" class="form-control" placeholder="Buscar pedrinhas, fios, fechos..." onkeyup="filtrarProdutos()">
+            <button class="btn btn-outline-secondary"><i class="fa-solid fa-magnifying-glass"></i></button>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+          <!-- Área de Conta/Usuário -->
+          <div id="areaUsuario">
+            <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#modalAuth">
+              <i class="fa-solid fa-user me-1"></i> Entrar / Cadastrar
+            </button>
+          </div>
+
+          <!-- Botão do Carrinho -->
+          <button class="btn btn-nane position-relative" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCarrinho">
+            <i class="fa-solid fa-cart-shopping me-1"></i> Carrinho
+            <span id="carrinhoQtd" class="position-absolute top-0 start-100 translate-middle badge rounded-pill cart-badge">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BANNER PRINCIPAL -->
+  <header class="py-5 text-center text-white" style="background: linear-gradient(135deg, #d4a373 0%, #e76f51 100%);">
+    <div class="container">
+      <h1 class="brand-font display-4 fw-bold mb-2">Sua Loja Completa de Bijuterias e Artesanato</h1>
+      <p class="fs-5">Pedrinhas, Fios, Fechos e Bijuterias Prontas com entrega rápida e atendimento via WhatsApp!</p>
+    </div>
+  </header>
+
+  <!-- FILTROS POR CATEGORIA -->
+  <div class="container my-4">
+    <div class="d-flex gap-2 overflow-auto pb-2" id="botoesCategorias">
+      <button class="btn btn-sm btn-dark rounded-pill active" onclick="filtrarCategoria('Todas', this)">Todas</button>
+      <button class="btn btn-sm btn-outline-dark rounded-pill" onclick="filtrarCategoria('Pedrinhas', this)">Pedrinhas & Miçangas</button>
+      <button class="btn btn-sm btn-outline-dark rounded-pill" onclick="filtrarCategoria('Fios', this)">Fios (Nylon/Silicone)</button>
+      <button class="btn btn-sm btn-outline-dark rounded-pill" onclick="filtrarCategoria('Fechos', this)">Fechos & Terminais</button>
+      <button class="btn btn-sm btn-outline-dark rounded-pill" onclick="filtrarCategoria('Prontas', this)">Bijuterias Prontas</button>
+      <button class="btn btn-sm btn-outline-dark rounded-pill" onclick="filtrarCategoria('Artesanato', this)">Kits & Artesanatos</button>
+    </div>
+  </div>
+
+  <!-- CATÁLOGO DE PRODUTOS -->
+  <main class="container mb-5">
+    <div class="row g-4" id="gridProdutos">
+      <!-- Produtos renderizados via JS -->
+    </div>
+  </main>
+
+  <!-- OFFCANVAS DO CARRINHO DE COMPRAS -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCarrinho">
+    <div class="offcanvas-header border-bottom">
+      <h5 class="offcanvas-title brand-font"><i class="fa-solid fa-bag-shopping me-2"></i>Meu Carrinho</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column">
+      <div id="itensCarrinho" class="flex-grow-1 overflow-auto mb-3">
+        <!-- Itens do Carrinho -->
+      </div>
+      
+      <div class="border-top pt-3">
+        <div class="d-flex justify-content-between fs-5 fw-bold mb-3">
+          <span>Total:</span>
+          <span id="subtotalCarrinho" class="text-success">R$ 0,00</span>
+        </div>
+        <button class="btn btn-whatsapp w-100 py-2 fs-6" onclick="iniciarCheckout()">
+          <i class="fa-brands fa-whatsapp me-2 fs-5"></i> Finalizar Pedido via WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL LOGIN / CADASTRO -->
+  <div class="modal fade" id="modalAuth" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title brand-font" id="tituloAuth">Acessar Conta</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Aba de Alternância -->
+          <ul class="nav nav-pills nav-justified mb-3" id="pills-tab">
+            <li class="nav-item">
+              <button class="nav-link active" id="tab-login" onclick="alternarAbaAuth('login')">Entrar</button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" id="tab-cadastro" onclick="alternarAbaAuth('cadastro')">Criar Cadastro</button>
+            </li>
+          </ul>
+
+          <!-- Form de Login -->
+          <form id="formLogin" onsubmit="executarLogin(event)">
+            <div class="mb-3">
+              <label class="form-label">Telefone ou E-mail</label>
+              <input type="text" id="loginIdentificador" class="form-control" required placeholder="Ex: (81) 99999-9999">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Senha</label>
+              <input type="password" id="loginSenha" class="form-control" required placeholder="******">
+            </div>
+            <button type="submit" class="btn btn-nane w-100">Entrar</button>
+          </form>
+
+          <!-- Form de Cadastro -->
+          <form id="formCadastro" onsubmit="executarCadastro(event)" style="display: none;">
+            <div class="mb-2">
+              <label class="form-label">Nome Completo</label>
+              <input type="text" id="cadNome" class="form-control" required placeholder="Seu nome">
+            </div>
+            <div class="mb-2">
+              <label class="form-label">WhatsApp/Telefone</label>
+              <input type="tel" id="cadTelefone" class="form-control" required placeholder="(81) 99999-9999">
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Endereço de Entrega</label>
+              <input type="text" id="cadEndereco" class="form-control" required placeholder="Rua, Número, Bairro">
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Cidade / Estado</label>
+              <input type="text" id="cadCidade" class="form-control" required placeholder="Ex: Recife - PE">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Criar Senha</label>
+              <input type="password" id="cadSenha" class="form-control" required placeholder="******">
+            </div>
+            <button type="submit" class="btn btn-nane w-100">Cadastrar e Salvar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS do Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- LÓGICA JAVASCRIPT DA LOJA -->
+  <script>
+    // 1. CONFIGURAÇÕES & DADOS DOS PRODUTOS
+    const NUMERO_WHATSAPP_EMPRESA = "5581973361261"; // NÚMERO ATUALIZADO
+
+    const produtos = [
+      { id: 1, nome: "Pedrinhas de Cristal 6mm (Pacote 100g)", categoria: "Pedrinhas", preco: 14.90, img: "https://images.unsplash.com/photo-1611591475281-8d2b70f074eb?w=400" },
+      { id: 2, nome: "Fio de Nylon Transparente 0.35mm", categoria: "Fios", preco: 8.50, img: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=400" },
+      { id: 3, nome: "Fio de Silicone Elástico para Pulseiras", categoria: "Fios", preco: 9.90, img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400" },
+      { id: 4, nome: "Kit Fechos Lagostim + Terminais Dourados", categoria: "Fechos", preco: 12.00, img: "https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?w=400" },
+      { id: 5, nome: "Pulseira Pronta Olho Grego Folheada", categoria: "Prontas", preco: 29.90, img: "https://images.unsplash.com/photo-1611591475281-8d2b70f074eb?w=400" },
+      { id: 6, nome: "Colar Artesanal de Miçangas Coloridas", categoria: "Prontas", preco: 35.00, img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400" }
+    ];
+
+    let carrinho = [];
+    let usuarioLogado = null;
+
+    // 2. INICIALIZAÇÃO DA PÁGINA
+    document.addEventListener("DOMContentLoaded", () => {
+      carregarUsuarioSalvo();
+      renderizarProdutos(produtos);
+    });
+
+    // 3. SESSÃO DE USUÁRIO (LOGIN / CADASTRO)
+    function carregarUsuarioSalvo() {
+      const sessao = localStorage.getItem("nanebijus_usuario");
+      if (sessao) {
+        usuarioLogado = JSON.parse(sessao);
+        atualizarHeaderUsuario();
+      }
+    }
+
+    function atualizarHeaderUsuario() {
+      const area = document.getElementById("areaUsuario");
+      if (usuarioLogado) {
+        area.innerHTML = `
+          <div class="dropdown">
+            <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <i class="fa-solid fa-circle-user me-1"></i> Olá, ${usuarioLogado.nome.split(' ')[0]}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket me-2"></i>Sair</a></li>
+            </ul>
+          </div>
+        `;
+      } else {
+        area.innerHTML = `
+          <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#modalAuth">
+            <i class="fa-solid fa-user me-1"></i> Entrar / Cadastrar
+          </button>
+        `;
+      }
+    }
+
+    function alternarAbaAuth(tipo) {
+      if (tipo === 'login') {
+        document.getElementById('formLogin').style.display = 'block';
+        document.getElementById('formCadastro').style.display = 'none';
+        document.getElementById('tab-login').classList.add('active');
+        document.getElementById('tab-cadastro').classList.remove('active');
+      } else {
+        document.getElementById('formLogin').style.display = 'none';
+        document.getElementById('formCadastro').style.display = 'block';
+        document.getElementById('tab-cadastro').classList.add('active');
+        document.getElementById('tab-login').classList.remove('active');
+      }
+    }
+
+    function executarCadastro(e) {
+      e.preventDefault();
+      const novoUsuario = {
+        nome: document.getElementById("cadNome").value,
+        telefone: document.getElementById("cadTelefone").value,
+        endereco: document.getElementById("cadEndereco").value,
+        cidade: document.getElementById("cadCidade").value,
+        senha: document.getElementById("cadSenha").value
+      };
+
+      // Salva a conta
+      localStorage.setItem("nanebijus_usuario", JSON.stringify(novoUsuario));
+      usuarioLogado = novoUsuario;
+      
+      atualizarHeaderUsuario();
+      bootstrap.Modal.getInstance(document.getElementById('modalAuth')).hide();
+      alert("Cadastro realizado com sucesso! Seus dados foram salvos.");
+    }
+
+    function executarLogin(e) {
+      e.preventDefault();
+      const id = document.getElementById("loginIdentificador").value;
+      
+      // Simulação de login buscando cadastro salvo
+      const sessao = localStorage.getItem("nanebijus_usuario");
+      if (sessao) {
+        usuarioLogado = JSON.parse(sessao);
+        atualizarHeaderUsuario();
+        bootstrap.Modal.getInstance(document.getElementById('modalAuth')).hide();
+      } else {
+        alert("Nenhum usuário encontrado. Crie um cadastro primeiro!");
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("nanebijus_usuario");
+      usuarioLogado = null;
+      atualizarHeaderUsuario();
+    }
+
+    // 4. RENDERIZAÇÃO E FILTROS DO CATÁLOGO
+    function renderizarProdutos(lista) {
+      const grid = document.getElementById("gridProdutos");
+      grid.innerHTML = "";
+
+      lista.forEach(prod => {
+        grid.innerHTML += `
+          <div class="col-6 col-md-4 col-lg-3">
+            <div class="card product-card h-100">
+              <img src="${prod.img}" class="product-img card-img-top" alt="${prod.nome}">
+              <div class="card-body d-flex flex-column justify-content-between">
+                <div>
+                  <span class="badge badge-cat mb-2">${prod.categoria}</span>
+                  <h6 class="card-title fw-bold text-dark">${prod.nome}</h6>
+                </div>
+                <div class="mt-3">
+                  <div class="fs-5 fw-bold text-success mb-2">R$ ${prod.preco.toFixed(2).replace('.', ',')}</div>
+                  <button class="btn btn-nane btn-sm w-100" onclick="adicionarAoCarrinho(${prod.id})">
+                    <i class="fa-solid fa-plus me-1"></i> Adicionar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function filtrarCategoria(cat, btn) {
+      document.querySelectorAll('#botoesCategorias button').forEach(b => {
+        b.classList.remove('btn-dark', 'active');
+        b.classList.add('btn-outline-dark');
+      });
+      btn.classList.remove('btn-outline-dark');
+      btn.classList.add('btn-dark', 'active');
+
+      if (cat === 'Todas') {
+        renderizarProdutos(produtos);
+      } else {
+        const filtrados = produtos.filter(p => p.categoria === cat);
+        renderizarProdutos(filtrados);
+      }
+    }
+
+    function filtrarProdutos() {
+      const busca = document.getElementById("searchInput").value.toLowerCase();
+      const filtrados = produtos.filter(p => p.nome.toLowerCase().includes(busca));
+      renderizarProdutos(filtrados);
+    }
+
+    // 5. CARRINHO DE COMPRAS & ENVIO PARA O WHATSAPP
+    function adicionarAoCarrinho(id) {
+      const itemExistente = carrinho.find(item => item.id === id);
+      if (itemExistente) {
+        itemExistente.qtd += 1;
+      } else {
+        const prod = produtos.find(p => p.id === id);
+        carrinho.push({ ...prod, qtd: 1 });
+      }
+      atualizarCarrinho();
+    }
+
+    function alterarQtd(id, delta) {
+      const item = carrinho.find(i => i.id === id);
+      if (item) {
+        item.qtd += delta;
+        if (item.qtd <= 0) {
+          carrinho = carrinho.filter(i => i.id !== id);
+        }
+      }
+      atualizarCarrinho();
+    }
+
+    function atualizarCarrinho() {
+      const container = document.getElementById("itensCarrinho");
+      const subtotalEl = document.getElementById("subtotalCarrinho");
+      const badge = document.getElementById("carrinhoQtd");
+
+      container.innerHTML = "";
+      let total = 0;
+      let qtdTotal = 0;
+
+      carrinho.forEach(item => {
+        const sub = item.preco * item.qtd;
+        total += sub;
+        qtdTotal += item.qtd;
+
+        container.innerHTML += `
+          <div class="d-flex align-items-center justify-content-between border-bottom py-2">
+            <div>
+              <div class="fw-bold small">${item.nome}</div>
+              <div class="text-muted small">R$ ${item.preco.toFixed(2).replace('.', ',')}</div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="alterarQtd(${item.id}, -1)">-</button>
+              <span>${item.qtd}</span>
+              <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="alterarQtd(${item.id}, 1)">+</button>
+            </div>
+          </div>
+        `;
+      });
+
+      subtotalEl.innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+      badge.innerText = qtdTotal;
+    }
+
+    function iniciarCheckout() {
+      if (carrinho.length === 0) {
+        alert("Seu carrinho está vazio!");
+        return;
+      }
+
+      // Se o cliente não estiver logado, exige/abre o cadastro
+      if (!usuarioLogado) {
+        alert("Por favor, faça seu login ou crie seu cadastro rápido para podermos enviar os dados para a loja!");
+        alternarAbaAuth('cadastro');
+        const modal = new bootstrap.Modal(document.getElementById('modalAuth'));
+        modal.show();
+        return;
+      }
+
+      // Se já está logado, envia a lista direto para o WhatsApp!
+      enviarPedidoWhatsApp();
+    }
+
+    function enviarPedidoWhatsApp() {
+      let textoItens = "";
+      let totalPedido = 0;
+
+      carrinho.forEach((item, idx) => {
+        const sub = item.preco * item.qtd;
+        totalPedido += sub;
+        textoItens += `${idx + 1}. *${item.nome}*\n   Qtd: ${item.qtd}x | Subtotal: R$ ${sub.toFixed(2).replace('.', ',')}\n`;
+      });
+
+      const mensagem = 
+`🛍️ *NOVO PEDIDO - NANEBIJUS* ✨
+--------------------------------
+👤 *CLIENTE:* ${usuarioLogado.nome}
+📱 *TELEFONE:* ${usuarioLogado.telefone}
+📍 *ENTREGA:* ${usuarioLogado.endereco}
+🏙️️ *CIDADE:* ${usuarioLogado.cidade}
+
+🛒 *ITENS DO PEDIDO:*
+${textoItens}
+--------------------------------
+💰 *VALOR TOTAL:* R$ ${totalPedido.toFixed(2).replace('.', ',')}
+
+Aguardando confirmação e chave PIX para pagamento!`;
+
+      const urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP_EMPRESA}?text=${encodeURIComponent(mensagem)}`;
+      window.open(urlWhatsApp, "_blank");
+    }
+  </script>
+</body>
+</html>
