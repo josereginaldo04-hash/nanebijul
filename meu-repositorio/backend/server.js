@@ -6,11 +6,15 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Conexão com o Banco de Dados MongoDB
-mongoose.connect('mongodb://localhost:27017/nanebijus', {
+// Conexão com o Banco de Dados (usa a variável de ambiente MONGODB_URI do Atlas ou localhost localmente)
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/nanebijus';
+
+mongoose.connect(mongoURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
-});
+})
+.then(() => console.log('Conectado ao MongoDB com sucesso!'))
+.catch(err => console.error('Erro ao conectar ao MongoDB:', err));
 
 // Modelo de Cliente
 const ClienteSchema = new mongoose.Schema({
@@ -51,4 +55,6 @@ app.post('/api/pedidos', async (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log("Servidor NaneBijus rodando na porta 3000"));
+// Porta dinâmica fornecida pelo Render ou 3000 por padrão em desenvolvimento local
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Servidor NaneBijus rodando na porta ${PORT}`));
