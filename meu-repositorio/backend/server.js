@@ -6,15 +6,19 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Conexão com o Banco de Dados (usa a variável de ambiente MONGODB_URI do Atlas ou localhost localmente)
-const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/nanebijus';
+// Conexão com o Banco de Dados (só conecta se MONGODB_URI estiver configurada)
+const mongoURI = process.env.MONGODB_URI;
 
-mongoose.connect(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log('Conectado ao MongoDB com sucesso!'))
-.catch(err => console.error('Erro ao conectar ao MongoDB:', err));
+if (mongoURI) {
+  mongoose.connect(mongoURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => console.log('Conectado ao MongoDB com sucesso!'))
+  .catch(err => console.error('Erro ao conectar ao MongoDB:', err));
+} else {
+  console.log('Aviso: MONGODB_URI não configurada. Servidor iniciando sem banco de dados.');
+}
 
 // Modelo de Cliente
 const ClienteSchema = new mongoose.Schema({
@@ -34,6 +38,11 @@ const PedidoSchema = new mongoose.Schema({
   data: { type: Date, default: Date.now }
 });
 const Pedido = mongoose.model('Pedido', PedidoSchema);
+
+// ROTA RAIZ (para não aparecer "Cannot GET /")
+app.get('/', (req, res) => {
+  res.send('API NaneBijus a funcionar com sucesso!');
+});
 
 // ROTA DE CADASTRO
 app.post('/api/cadastrar', async (req, res) => {
@@ -55,6 +64,6 @@ app.post('/api/pedidos', async (req, res) => {
   }
 });
 
-// Porta dinâmica fornecida pelo Render ou 3000 por padrão em desenvolvimento local
+// Porta dinâmica fornecida pelo Render
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor NaneBijus rodando na porta ${PORT}`));
+app.listen(PORT, () => console.log(`Servidor NaneBijus a rodar na porta ${PORT}`));
