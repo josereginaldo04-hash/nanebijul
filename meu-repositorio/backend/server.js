@@ -9,15 +9,15 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Serve os ficheiros estáticos da pasta frontend (HTML, CSS, JS, Imagens)
+// Serve os ficheiros estáticos da pasta frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// Exemplo de rota de API (se necessário)
+// Rota de teste da API
 app.get('/api/status', (req, res) => {
-    res.json({ mensagem: 'API NaneBijus a funcionar com sucesso!' });
+    res.json({ mensagem: 'API NaneBijus a funcionar!' });
 });
 
-// Redireciona qualquer outra rota para o index.html do frontend
+// Envia o index.html para qualquer rota que não seja da API
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
 });
